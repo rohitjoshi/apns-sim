@@ -18,11 +18,11 @@ Prerequisite:
 Once you have downloaded/installed LuaJit and luarocks, other dependencies can be installed using luarocks
 e.g.
 
-luarocks install copas
+#luarocks install copas
 
-luarocks install LuaSec
+#luarocks install LuaSec
 
-luarocks install LuaLogging
+#luarocks install LuaLogging
 
 
 Usage:  apns-sim.lua -k ssl_key -c ssl_cert[ -s server -p port -l loglevel ]
