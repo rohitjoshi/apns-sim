@@ -22,10 +22,6 @@ require "logging.console"
 local socket = require("socket")
 require("ssl")
 
---- utils.lua
-require "utils"
---- requires serialize.lua
---require "utils/serialize"
 
 local logger = logging.console()
 logger:setLevel (logging.DEBUG)
@@ -332,6 +328,18 @@ local function validate_args(arg)
 end
 
 ------------------------------------------------------------------------------
+--- set the log level
+------------------------------------------------------------------------------
+local function set_loglevel(logger, level)
+  if("debug" == level) then logger:setLevel (logging.DEBUG)
+  elseif("info" == level) then logger:setLevel (logging.INFO)
+  elseif("warn" == level) then logger:setLevel (logging.WARN)
+  elseif("error" == level) then logger:setLevel (logging.ERROR)
+  else logger:setLevel (logging.ERROR)
+  end
+
+end
+------------------------------------------------------------------------------
 --- main function (entry point)
 -- @return content of the task file
 ------------------------------------------------------------------------------
@@ -342,6 +350,7 @@ local function main()
 	if(host == nil or port == nil or loglevel == nil) then return end
    
 
+    
 	set_loglevel(logger, loglevel)
 
 
