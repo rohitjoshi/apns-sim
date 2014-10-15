@@ -24,21 +24,15 @@ require("ssl")
 
 
 local logger = logging.console()
-logger:setLevel (logging.DEBUG)
+--logger:setLevel (logging.DEBUG)
 
 local server_socket
 
 
-local params = {
-  mode = "server",
-  protocol = "tlsv1",
-  key = "./key.pem",
-  certificate = "./cert.pem",
-  -- cafile = "/etc/certs/CA.pem",
- -- verify = {"peer", "fail_if_no_peer_cert"},
-  options = {"all", "no_sslv2"},
-  ciphers = "ALL:!ADH:@STRENGTH",
-}
+
+
+local params = { }
+  
 
 
 ------------------------------------------------------------------------------
@@ -93,31 +87,33 @@ end
 -- @param socket clinet
 -- @param number of messages to send
 ------------------------------------------------------------------------------
-local function client_handler(skt, host, port)
+local function client_handler(skt, host, port, ssl_enabled)
 
 	local peername =  host .. ":" .. port
 	logger:info ("Received client connection  from '%s':" , peername)
 	skt:setoption('tcp-nodelay', true)
 	
 	--skt:settimeout(1)
-	skt = ssl.wrap(skt, params)
+	if ssl_enabled == true then
+		skt = ssl.wrap(skt, params)
 	
-	local ok,message = skt:dohandshake()
-	if not ok then
-		
+		local ok,message = skt:dohandshake()
+		if not ok then
            logger.error (' ssl handshake failed with:' .. message)
-            return
-    end
+           return
+    		end
+	end 
 
 	local client = copas.wrap(skt)
 	
 	
 	while true do
-	   
+
 		local command = read_command(client)
 		if not command  then
 			return;
 		end
+
 		
 		local id, expiry, status
 		if command == 1 then
@@ -171,14 +167,15 @@ end
 function read_command (client)
 	local size_to_read = 1
 	local command, status = client:receive(size_to_read)
-	if(status ~= nil and status == "closed") then
-		logger.error  ("Connection closed by foreign host. Failed to read command")
+	if (status ~= nil and status == "closed") then
+		logger:warn ("Connection closed by foreign host. Failed to read command. Reason:")
+		return;
+	end
+	if command == nil then		 
+		logger:error ("command is nil" )
 		return nil;
 	end
-	if command == nil then		  
-		logger.error ("command is nil" )
-		return nil;
-	end
+	 
 		
 	return string.byte(command)
 end
@@ -299,23 +296,54 @@ end
 -- @return host, port and task_file
 ------------------------------------------------------------------------------
 local function validate_args(arg)
-   local usage = "Usage apns-sim.lua [ -s server  -p port -l loglevel ]"
-   local opts = getopt( arg, "hspl" )
+   local usage = "Usage apns-sim.lua -k ssl_key -c ssl_cert [ -s server -p port -l loglevel ]"
+   local opts = getopt( arg, "kchspl" )
 
    if(opts["h"] ~= nil) then
        print(usage)
        return;
    end
+
+   local ssl_key = opts["k"]
+   if not ssl_key then
+        print("ssl_key is mandatory")
+    		print(usage)
+       return;
+    end
+	
+   local ssl_cert = opts["c"]
+   if not ssl_cert then
+        print("ssl_cert is mandatory")
+    		print(usage)
+       return;
+    end
+	
+	print(ssl_cert)
+	print(ssl_key)
+	
    local host = opts["s"]
    if(host == nil) then host = "127.0.0.1" end
    
    local port = opts["p"]
    if(port == nil ) then port = "8080" end
+
+  
+
+	params = {
+  		mode = "server",
+  		protocol = "tlsv1",
+  		key = ssl_key,
+  		certificate = ssl_cert,
+  		-- cafile = "/etc/certs/CA.pem",
+ 		-- verify = {"peer", "fail_if_no_peer_cert"},
+  		options = {"all", "no_sslv2"},
+  		ciphers = "ALL:!ADH:@STRENGTH",
+	}
   
 
    local loglevel = opts["l"]
 	if(loglevel == nil) then
-		loglevel = "debug"
+		loglevel = "info"
 	elseif(loglevel ~= "debug" and loglevel ~= "info" and loglevel ~= "warn" and loglevel ~= "error") then
 		print("Error: Invalid loglevel: " .. loglevel .. ". Valid options are debug, info, warn or error")
 		return;
