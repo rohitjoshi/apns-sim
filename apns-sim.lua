@@ -29,7 +29,7 @@ local logger = logging.console()
 local server_socket
 
 
-
+local ssl_enabled = false
 
 local params = { }
   
@@ -87,7 +87,7 @@ end
 -- @param socket clinet
 -- @param number of messages to send
 ------------------------------------------------------------------------------
-local function client_handler(skt, host, port, ssl_enabled)
+local function client_handler(skt, host, port)
 
 	local peername =  host .. ":" .. port
 	logger:info ("Received client connection  from '%s':" , peername)
@@ -168,7 +168,7 @@ function read_command (client)
 	local size_to_read = 1
 	local command, status = client:receive(size_to_read)
 	if (status ~= nil and status == "closed") then
-		logger:warn ("Connection closed by foreign host. Failed to read command. Reason:")
+		logger:warn ("Connection closed by foreign host. Failed to read command.")
 		return;
 	end
 	if command == nil then		 
@@ -296,30 +296,42 @@ end
 -- @return host, port and task_file
 ------------------------------------------------------------------------------
 local function validate_args(arg)
-   local usage = "Usage apns-sim.lua -k ssl_key -c ssl_cert [ -s server -p port -l loglevel ]"
-   local opts = getopt( arg, "kchspl" )
+   local usage = "Usage apns-sim.lua -t ssl_enabled [ -k ssl_key -c ssl_cert] [ -s server -p port -l loglevel ]"
+   local opts = getopt( arg, "tkchspl" )
 
    if(opts["h"] ~= nil) then
        print(usage)
        return;
    end
 
+    local loglevel = opts["l"]
+	if(loglevel == nil) then
+		loglevel = "info"
+	elseif(loglevel ~= "debug" and loglevel ~= "info" and loglevel ~= "warn" and loglevel ~= "error") then
+		print("Error: Invalid loglevel: " .. loglevel .. ". Valid options are debug, info, warn or error")
+		return;
+	end
+ 
+   if  not opts["t"] or  opts["t"] == false then
+  		ssl_enabled = false
+		logger:info("SSL is disabled")
+   else	
+        logger:info("SSL is enabled")
+   end
    local ssl_key = opts["k"]
-   if not ssl_key then
-        print("ssl_key is mandatory")
+   if not ssl_key and ssl_enabled then
+        logger:error("ssl_key is mandatory")
     		print(usage)
        return;
     end
 	
    local ssl_cert = opts["c"]
-   if not ssl_cert then
-        print("ssl_cert is mandatory")
+   if not ssl_cert and ssl_enabled then
+         logger:error("ssl_key is mandatory")("ssl_cert is mandatory")
     		print(usage)
        return;
     end
 	
-	print(ssl_cert)
-	print(ssl_key)
 	
    local host = opts["s"]
    if(host == nil) then host = "127.0.0.1" end
@@ -328,7 +340,6 @@ local function validate_args(arg)
    if(port == nil ) then port = "8080" end
 
   
-
 	params = {
   		mode = "server",
   		protocol = "tlsv1",
@@ -341,13 +352,7 @@ local function validate_args(arg)
 	}
   
 
-   local loglevel = opts["l"]
-	if(loglevel == nil) then
-		loglevel = "info"
-	elseif(loglevel ~= "debug" and loglevel ~= "info" and loglevel ~= "warn" and loglevel ~= "error") then
-		print("Error: Invalid loglevel: " .. loglevel .. ". Valid options are debug, info, warn or error")
-		return;
-	end
+  
 
   
 
