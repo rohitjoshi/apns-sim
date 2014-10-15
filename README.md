@@ -1,7 +1,7 @@
-apns-sim
+#apns-sim
 ========
 
-Apple Push Notification Service (APNS) Simulator
+###Apple Push Notification Service (APNS) Simulator
 
 APNS simulator implementes [APNS Specs] (https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/CommunicatingWIthAPS.html)   for a simple and an enhanced push notification.
 
