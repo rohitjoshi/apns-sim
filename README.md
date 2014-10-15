@@ -6,23 +6,33 @@ Simulator for Apple Push Notification Service
 APNS simulator implemented https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/CommunicatingWIthAPS.html  specification for simple and enhanced push notification.
 
 Prerequisite:
+
 1.  LuaJit : http://luajit.org/download.html
-2.  LuaSec : https://github.com/brunoos/luasec  
+
+2.  LuaSec : https://github.com/brunoos/luasec 
+
 3.  LuaLogging: http://keplerproject.org/lualogging/
+
 4.  copas:  http://keplerproject.github.io/copas/
 
 Once you have downloaded/installed LuaJit and luarocks, other dependencies can be installed using luarocks
 e.g.
 
 luarocks install copas
+
 luarocks install LuaSec
+
 luarocks install LuaLogging
 
-Usage:  apns-sim.lua -k ssl_key -c ssl_cert [ -s server -p port -l loglevel ]
+
+Usage:  apns-sim.lua -k ssl_key -c ssl_cert[ -s server -p port -l loglevel ]
 
 Here ssl_key  and ssl_cert fields are mandatory which are ssl key and certificate required to initiate ssl connection
+
 server : default value is 127.0.0.1
+
 port  :  default 8080
+
 loglevel : default value is 'warn'
 
 e.f
