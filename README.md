@@ -3,7 +3,7 @@ apns-sim
 
 Simulator for Apple Push Notification Service
 
-APNS simulator implemented https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/CommunicatingWIthAPS.html  specification for simple and enhanced push notification.
+APNS simulator implementes [APNS Specs] (https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/CommunicatingWIthAPS.html)  specification for simple and enhanced push notification.
 
 Prerequisite:
 
