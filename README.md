@@ -15,15 +15,17 @@ Prerequisite:
 
 4.  copas:  http://keplerproject.github.io/copas/
 
+
+<pre>
 Once you have downloaded/installed LuaJit and luarocks, other dependencies can be installed using luarocks
 e.g.
-<pre>
 luarocks install copas
 
 luarocks install LuaSec
 
 luarocks install LuaLogging
 </pre>
+
 
 <pre>
 Usage:  apns-sim.lua -k ssl_key -c ssl_cert[ -s server -p port -l loglevel ]
