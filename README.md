@@ -43,8 +43,10 @@ lua  apns-sim.lua -k ./key.pem -c ./cert.pem
 </pre>
 When client connect to this simulator and send a push notification, you will see log entries on console.
 
+<pre>
 Wed Oct 15 09:16:13 2014 INFO Received client connection  from '127.0.0.1:53444':
 Wed Oct 15 09:16:13 2014 INFO Received notification: command=1; id=21; expiry=1413382573; token=adf3b210e7adf35f540f45b2697760d9d41081569dc4509ee98bb4d4c92a72ae; payload={"aps":{"alert":{"body":"Hello World"}}}
+</pre>
 
 
 
