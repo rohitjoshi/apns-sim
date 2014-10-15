@@ -26,18 +26,21 @@ luarocks install LuaLogging
 
 
 <pre>
-Usage:  apns-sim.lua -k ssl_key -c ssl_cert[ -s server -p port -l loglevel ]
+Usage:   apns-sim.lua -t ssl_enabled [ -k ssl_key -c ssl_cert] [ -s server -p port -l loglevel -]
 
-Here ssl_key  and ssl_cert fields are mandatory which are ssl key and certificate required to initiate ssl connection
+Here ssl_key  and ssl_cert fields are mandatory if ssl_enabled is set to true.  
 
+ssl_enabled :  defaul false
 server : default value is 127.0.0.1
 
 port  :  default 8080
 
 loglevel : default value is 'warn'
 
-e.g.
-lua  apns-sim.lua -k ./key.pem -c ./cert.pem
+e.g. for ssl connection:
+lua  apns-sim.lua -t true -k ./key.pem -c ./cert.pem
+
+for non-ssl connection:  lua  apns-sim.lua 
 </pre>
 When client connect to this simulator and send a push notification, you will see log entries on console.
 
